@@ -1,9 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ShoppingBag, Phone, Mail, Menu as MenuIcon, X, Share2 } from "lucide-react";
 
 export default function Header({ cartCount, cartTotal, onCartClick }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sharedToast, setSharedToast] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollYRef = useRef(0);
+
+  // Smart Auto-Hide Scroll Listener with rAF throttling and clean unmount
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const prevScrollY = lastScrollYRef.current;
+
+          // Always visible at the very top of page
+          if (currentScrollY < 50) {
+            setIsVisible(true);
+            setIsScrolled(false);
+          } else {
+            setIsScrolled(true);
+
+            // Only auto-hide if mobile drawer is closed
+            if (!mobileMenuOpen) {
+              // Scrolling DOWN: auto-hide header
+              if (currentScrollY > prevScrollY && currentScrollY > 70) {
+                setIsVisible(false);
+              }
+              // Scrolling UP: reveal header
+              else if (currentScrollY < prevScrollY) {
+                setIsVisible(true);
+              }
+            }
+          }
+
+          lastScrollYRef.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [mobileMenuOpen]);
+
+  // Keyboard accessibility: Escape closes mobile drawer
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen]);
 
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
@@ -27,7 +83,7 @@ export default function Header({ cartCount, cartTotal, onCartClick }) {
   };
 
   return (
-    <header className="cyber-header">
+    <header className={`cyber-header ${isScrolled ? "is-scrolled" : ""} ${!isVisible ? "header-hidden" : ""}`}>
       {/* Top Banner - Hotline & Logistics */}
       <div className="header-top-bar">
         <div className="top-bar-content container">

@@ -127,6 +127,8 @@ export default function Hero({ onAddToCart, onSelectFood }) {
               src={slide.image}
               alt={`${slide.titleLine1} ${slide.titleLine2}`}
               className="hero-borderless-img"
+              loading={idx === 0 ? "eager" : "lazy"}
+              decoding="async"
               onError={(e) => {
                 if (slide.fallbackImage && e.target.src !== slide.fallbackImage) {
                   e.target.src = slide.fallbackImage;

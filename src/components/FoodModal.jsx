@@ -1,7 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Star, Flame, Plus, Minus, ShieldCheck } from "lucide-react";
 
 export default function FoodModal({ item, onClose, onAddToCart }) {
+  useEffect(() => {
+    if (!item) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [item, onClose]);
+
   if (!item) return null;
 
   const [quantity, setQuantity] = useState(1);
@@ -87,6 +98,8 @@ export default function FoodModal({ item, onClose, onAddToCart }) {
               src={item.image}
               alt={item.name}
               className="modal-main-img"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80';
               }}

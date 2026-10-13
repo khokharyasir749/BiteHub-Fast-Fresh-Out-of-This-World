@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { X, Plus, Minus, Trash2, ShieldAlert, ArrowRight } from "lucide-react";
 
 export default function Cart({ isOpen, onClose, cartItems, onUpdateQty, onRemoveItem, onCheckout }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -40,7 +51,13 @@ export default function Cart({ isOpen, onClose, cartItems, onUpdateQty, onRemove
               {cartItems.map((item) => (
                 <div key={item.cartId} className="cart-item glass-card">
                   {/* Item Image */}
-                  <img src={item.image} alt={item.name} className="cart-item-img" />
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="cart-item-img"
+                    loading="lazy"
+                    decoding="async"
+                  />
 
                   {/* Item Info */}
                   <div className="cart-item-info">

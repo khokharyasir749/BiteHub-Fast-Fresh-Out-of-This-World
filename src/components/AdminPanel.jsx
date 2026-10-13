@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { X, Lock, Trash2, Edit2, Plus, RefreshCw, Eye, EyeOff, Search } from "lucide-react";
 
 export default function AdminPanel({
@@ -10,6 +10,17 @@ export default function AdminPanel({
   onDeleteItem,
   onResetDefaults,
 }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const [passcode, setPasscode] = useState("");
@@ -256,7 +267,13 @@ export default function AdminPanel({
                         {filteredItems.map((item) => (
                           <tr key={item.id}>
                             <td>
-                              <img src={item.image} alt={item.name} className="admin-thumbnail" />
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                className="admin-thumbnail"
+                                loading="lazy"
+                                decoding="async"
+                              />
                             </td>
                             <td className="font-tech text-sm font-semibold">{item.name}</td>
                             <td className="text-secondary text-xs">{item.category}</td>
@@ -372,6 +389,8 @@ export default function AdminPanel({
                           src={formData.image}
                           alt="Preview"
                           className="admin-preview-thumbnail"
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80";
                           }}

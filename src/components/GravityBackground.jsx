@@ -4,13 +4,13 @@ export default function GravityBackground() {
   const [particles, setParticles] = useState([]);
 
   useEffect(() => {
-    // Generate a set of static/animating particles on mount
-    const newParticles = Array.from({ length: 40 }).map((_, i) => {
-      const size = Math.random() * 6 + 2; // size in px
-      const duration = Math.random() * 20 + 15; // duration in seconds
-      const delay = Math.random() * -20; // negative delay so they start immediately at random points
+    // Generate lightweight ambient floating particles for high FPS scrolling
+    const newParticles = Array.from({ length: 16 }).map((_, i) => {
+      const size = Math.random() * 4 + 2; // size in px
+      const duration = Math.random() * 15 + 12; // duration in seconds
+      const delay = Math.random() * -15; // start immediately
       const left = Math.random() * 100; // left position %
-      const glowColor = Math.random() > 0.5 ? "rgba(0, 243, 255, 0.6)" : "rgba(255, 0, 127, 0.6)";
+      const glowColor = Math.random() > 0.5 ? "rgba(0, 243, 255, 0.4)" : "rgba(255, 0, 127, 0.4)";
 
       return {
         id: i,
@@ -21,12 +21,13 @@ export default function GravityBackground() {
           animationDuration: `${duration}s`,
           animationDelay: `${delay}s`,
           background: glowColor,
-          boxShadow: `0 0 ${size * 2}px ${glowColor}`,
+          boxShadow: `0 0 ${size}px ${glowColor}`,
           position: "absolute",
           borderRadius: "50%",
           bottom: "-20px",
           pointerEvents: "none",
           zIndex: 0,
+          willChange: "transform",
         },
       };
     });

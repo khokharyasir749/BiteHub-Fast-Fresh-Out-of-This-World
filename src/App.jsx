@@ -165,6 +165,8 @@ export default function App() {
                     src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80"
                     alt="Zero-G Burger Illustration"
                     className="about-burger-img"
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80';
                     }}

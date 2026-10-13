@@ -91,7 +91,8 @@ export default function MenuSection({ menuItems, onSelectFood }) {
   };
 
   return (
-    <section id="menu-section" className="modern-menu-section">
+    <section id="menu-section" className="modern-menu-section pt-16 md:pt-20">
+      <span id="menu" style={{ position: "absolute", top: "-90px" }} aria-hidden="true" />
       <div className="container">
         {/* Modern Header */}
         <div className="modern-section-header">
@@ -194,7 +195,7 @@ export default function MenuSection({ menuItems, onSelectFood }) {
         {filteredAndSortedItems.length > 0 ? (
           viewMode === "grid" ? (
             /* Layout 1: Asymmetric Cyber-Glass Grid Showcase */
-            <div className="asymmetric-cyber-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12 px-2 max-w-7xl mx-auto">
+            <div className="asymmetric-cyber-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12 px-2 max-w-7xl mx-auto pt-16 md:pt-20">
               {filteredAndSortedItems.map((item, idx) => (
                 <div
                   key={item.id}

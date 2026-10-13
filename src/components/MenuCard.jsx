@@ -79,7 +79,7 @@ export default function MenuCard({ item, onSelectFood, index = 0, viewMode = "gr
 
   return (
     <div
-      className={`cyber-glass-card group relative flex flex-col justify-between min-h-[460px] rounded-[2.5rem] border border-white/5 bg-[#12141c]/60 backdrop-blur-xl p-6 overflow-visible transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:border-cyan-500/25 ${theme.class} ${
+      className={`cyber-glass-card group relative flex flex-col justify-between min-h-[460px] rounded-[2.5rem] border border-white/5 p-6 overflow-visible transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:border-cyan-500/25 ${theme.class} ${
         isHovered ? "is-hovered" : ""
       }`}
       style={{
@@ -149,6 +149,7 @@ export default function MenuCard({ item, onSelectFood, index = 0, viewMode = "gr
           alt={name}
           className="dish-breakout-img scale-[1.15] group-hover:scale-[1.3] group-hover:-translate-y-4 group-hover:rotate-6 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)] z-40 filter brightness-[1.05] contrast-[1.05]"
           loading="lazy"
+          decoding="async"
           onError={(e) => {
             e.target.src =
               "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80";
