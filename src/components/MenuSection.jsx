@@ -1,20 +1,20 @@
 import React, { useState, useMemo } from "react";
-import { Search, Flame, Pizza, Layers, CupSoda, Cake, SlidersHorizontal } from "lucide-react";
+import { Search, Flame, Pizza, Layers, CupSoda, Cake, SlidersHorizontal, Sparkles } from "lucide-react";
 import { menuData } from "../data/menuData";
 import MenuCard from "./MenuCard";
 
 export default function MenuSection({ menuItems, onSelectFood }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("popular"); // popular, price-asc, price-desc, rating
+  const [sortBy, setSortBy] = useState("popular");
 
   const categories = [
-    { id: "All", name: "All Sectors", icon: SlidersHorizontal, glow: "cyan" },
-    { id: "Pizzas", name: "Pizzas", icon: Pizza, glow: "cyan" },
-    { id: "Burgers", name: "Burgers", icon: Flame, glow: "pink" },
-    { id: "Loaded Fries & Starters", name: "Fries & Starters", icon: Layers, glow: "pink" },
-    { id: "Intergalactic Beverages & Shakes", name: "Beverages", icon: CupSoda, glow: "yellow" },
-    { id: "Desserts & Sweet Bites", name: "Desserts", icon: Cake, glow: "yellow" },
+    { id: "All", name: "All Sectors", icon: SlidersHorizontal },
+    { id: "Pizzas", name: "Pizzas", icon: Pizza },
+    { id: "Burgers", name: "Burgers", icon: Flame },
+    { id: "Loaded Fries & Starters", name: "Fries & Starters", icon: Layers },
+    { id: "Intergalactic Beverages & Shakes", name: "Beverages", icon: CupSoda },
+    { id: "Desserts & Sweet Bites", name: "Desserts", icon: Cake },
   ];
 
   const filteredAndSortedItems = useMemo(() => {
@@ -22,21 +22,28 @@ export default function MenuSection({ menuItems, onSelectFood }) {
 
     const filteredItems = itemsToDisplay.filter((item) => {
       const query = (searchQuery || "").trim().toLowerCase();
-      const matchesCategory = activeCategory.toLowerCase() === "all" || item.category?.toLowerCase() === activeCategory.toLowerCase();
-      
+      const matchesCategory =
+        activeCategory.toLowerCase() === "all" ||
+        item.category?.toLowerCase() === activeCategory.toLowerCase();
+
       if (!query) return matchesCategory;
 
       const nameMatch = item.name?.toLowerCase().includes(query);
       const descMatch = item.description?.toLowerCase().includes(query);
-      const catMatch = item.category?.toLowerCase().includes(query) || query.includes(item.category?.toLowerCase());
-      const tagMatch = item.tags?.some(tag => tag.toLowerCase().includes(query) || query.includes(tag.toLowerCase()));
+      const catMatch =
+        item.category?.toLowerCase().includes(query) ||
+        query.includes(item.category?.toLowerCase());
+      const tagMatch = item.tags?.some(
+        (tag) =>
+          tag.toLowerCase().includes(query) ||
+          query.includes(tag.toLowerCase())
+      );
 
       return matchesCategory && (nameMatch || descMatch || catMatch || tagMatch);
     });
 
     let result = [...filteredItems];
 
-    // Sort Items
     if (sortBy === "price-asc") {
       result.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price-desc") {
@@ -47,7 +54,7 @@ export default function MenuSection({ menuItems, onSelectFood }) {
       result.sort((a, b) => {
         if (a.isPopular && !b.isPopular) return -1;
         if (!a.isPopular && b.isPopular) return 1;
-        return b.rating - a.rating; // tie breaker
+        return (b.rating || 0) - (a.rating || 0);
       });
     }
 
@@ -55,50 +62,64 @@ export default function MenuSection({ menuItems, onSelectFood }) {
   }, [menuItems, activeCategory, searchQuery, sortBy]);
 
   return (
-    <section id="menu-section" className="cyber-menu-section">
+    <section id="menu-section" className="modern-menu-section">
       <div className="container">
-        {/* Title */}
-        <div className="section-header text-center">
-          <h2 className="section-title text-glow-cyan">INTERSTELLAR MENU</h2>
-          <p className="section-subtitle">Select your payload from our neon food vaults</p>
-          <div className="header-divider"></div>
+        {/* Modern Section Header */}
+        <div className="modern-section-header">
+          <div className="menu-capsule-badge">
+            <Sparkles size={12} className="badge-sparkle-icon" />
+            <span>CURATED CATALOG</span>
+          </div>
+
+          <h2 className="modern-section-title">
+            INTERSTELLAR FLAVORS
+          </h2>
+
+          <p className="modern-section-subtitle">
+            Curated zero-gravity recipes crafted with high-impact flavor formulas
+          </p>
         </div>
 
-        {/* Filter controls: Search and Sort */}
-        <div className="menu-controls">
-          <div className="search-bar-wrapper">
-            <Search size={18} className="search-icon" />
+        {/* Controls Bar: Search & Sort Engine */}
+        <div className="modern-controls-bar">
+          <div className="modern-search-box">
+            <Search size={16} className="modern-search-icon" />
             <input
               type="text"
-              placeholder="Query food name or cyber tags (e.g., Cheesy, Spicy)..."
+              placeholder="Search dishes, burgers, pizzas or tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
+              className="modern-search-field"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery("")} className="clear-search">
+              <button
+                onClick={() => setSearchQuery("")}
+                className="modern-clear-search-btn"
+                aria-label="Clear search"
+              >
                 &times;
               </button>
             )}
           </div>
 
-          <div className="sort-selector-wrapper">
-            <span className="sort-label">Sort Engine:</span>
+          <div className="modern-sort-box">
+            <span className="sort-hint-label">Sort:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="sort-select"
+              className="modern-sort-dropdown"
+              aria-label="Sort dishes"
             >
-              <option value="popular">Telemetry: Popularity</option>
+              <option value="popular">Popularity</option>
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
-              <option value="rating">System rating: Highest</option>
+              <option value="rating">Top Rated</option>
             </select>
           </div>
         </div>
 
-        {/* Category filter buttons */}
-        <div className="category-tabs">
+        {/* Sleek Minimalist Category Pills */}
+        <div className="modern-category-pills-row">
           {categories.map((cat) => {
             const Icon = cat.icon;
             const isSelected = activeCategory === cat.id;
@@ -106,18 +127,18 @@ export default function MenuSection({ menuItems, onSelectFood }) {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`category-btn btn-glow-${cat.glow} ${isSelected ? "active" : ""}`}
+                className={`modern-category-pill ${isSelected ? "active" : ""}`}
               >
-                <Icon size={16} />
+                <Icon size={15} className="pill-icon" />
                 <span>{cat.name}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Menu Grid */}
+        {/* High-End Menu Grid */}
         {filteredAndSortedItems.length > 0 ? (
-          <div className="menu-grid">
+          <div className="modern-menu-grid">
             {filteredAndSortedItems.map((item) => (
               <MenuCard
                 key={item.id}
@@ -127,17 +148,21 @@ export default function MenuSection({ menuItems, onSelectFood }) {
             ))}
           </div>
         ) : (
-          <div className="no-items-state glass-card">
-            <p className="no-items-text">⚠️ Zero matches in the sector databases.</p>
+          <div className="modern-empty-state">
+            <div className="empty-state-icon">📡</div>
+            <h3 className="empty-state-title">No Culinary Signals Detected</h3>
+            <p className="empty-state-desc">
+              We couldn't find items matching "{searchQuery}". Try searching for another ingredient or reset filters.
+            </p>
             <button
               onClick={() => {
                 setActiveCategory("All");
                 setSearchQuery("");
                 setSortBy("popular");
               }}
-              className="btn-cyber-outline reset-filters-btn"
+              className="btn-modern-reset-filters"
             >
-              <span>RESET GRID TELEMETRY</span>
+              Reset All Filters
             </button>
           </div>
         )}
