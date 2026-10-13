@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { ShoppingBag, Phone, Mail, Menu as MenuIcon, X } from "lucide-react";
+import { ShoppingBag, Phone, Mail, Menu as MenuIcon, X, Share2 } from "lucide-react";
 
 export default function Header({ cartCount, cartTotal, onCartClick }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sharedToast, setSharedToast] = useState(false);
 
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
@@ -12,9 +13,22 @@ export default function Header({ cartCount, cartTotal, onCartClick }) {
     }
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: "BiteHub - Fast, Fresh & Out of This World",
+        url: window.location.href,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setSharedToast(true);
+      setTimeout(() => setSharedToast(false), 2000);
+    }
+  };
+
   return (
     <header className="cyber-header">
-      {/* Top Banner - Contact Info */}
+      {/* Top Banner - Hotline & Logistics */}
       <div className="header-top-bar">
         <div className="top-bar-content container">
           <div className="contact-links">
@@ -33,47 +47,78 @@ export default function Header({ cartCount, cartTotal, onCartClick }) {
         </div>
       </div>
 
-      {/* Main Navbar */}
+      {/* Main Navbar styled in Image 2's clean aesthetic */}
       <div className="header-main-nav">
         <div className="nav-container container">
-          {/* Logo */}
-          <div className="logo-container" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            <span className="logo-text">
-              BITE<span className="logo-neon-accent">HUB</span>
-            </span>
-            <div className="logo-glow-line"></div>
+          {/* Circular Stamp Logo (Exact style as Image 2!) */}
+          <div
+            className="brand-circle-stamp"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            title="BiteHub Base"
+          >
+            <div className="stamp-ring">
+              <svg className="stamp-burger-art" viewBox="0 0 40 40" fill="none" stroke="currentColor">
+                {/* Burger Top Bun */}
+                <path d="M8 18C8 12.5 13.5 8 20 8C26.5 8 32 12.5 32 18H8Z" strokeWidth="1.8" strokeLinecap="round" />
+                {/* Sesame Seeds */}
+                <circle cx="16" cy="12" r="0.75" fill="currentColor" />
+                <circle cx="21" cy="11" r="0.75" fill="currentColor" />
+                <circle cx="25" cy="13" r="0.75" fill="currentColor" />
+                {/* Lettuce wavy layer */}
+                <path d="M7 21C8.5 20 10.5 22 12 21C13.5 20 15.5 22 17 21C18.5 20 20.5 22 22 21C23.5 20 25.5 22 27 21C28.5 20 30.5 22 33 21" strokeWidth="1.6" strokeLinecap="round" />
+                {/* Patty & Cheese */}
+                <path d="M9 25H31" strokeWidth="2.2" strokeLinecap="round" />
+                {/* Bottom Bun */}
+                <path d="M10 28C10 30.5 14 32 20 32C26 32 30 30.5 30 28H10Z" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              <div className="stamp-brand-name">BITEHUB</div>
+            </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="desktop-nav">
+          {/* Clean Editorial Navigation (As in Image 2: HOME · BURGERS · SNACKS · DRINKS · CONTACTS) */}
+          <nav className="desktop-nav editorial-nav-links">
             <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="nav-link">
-              Base
+              HOME
             </button>
             <button onClick={() => scrollToSection("menu-section")} className="nav-link">
-              Menu Grid
+              BURGERS
             </button>
-            <button onClick={() => scrollToSection("about-section")} className="nav-link">
-              Sector Info
+            <button onClick={() => scrollToSection("menu-section")} className="nav-link">
+              SNACKS
+            </button>
+            <button onClick={() => scrollToSection("menu-section")} className="nav-link">
+              DRINKS
             </button>
             <button onClick={() => scrollToSection("contact-section")} className="nav-link">
-              Transmit Comms
+              CONTACTS
             </button>
           </nav>
 
-          {/* Cart & Menu Actions */}
+          {/* Actions: Share, Cart and Mobile Toggle */}
           <div className="nav-actions">
-            {/* Floating anti-gravity cart button */}
-            <button onClick={onCartClick} className="cart-trigger-btn float-animation">
-              <ShoppingBag size={20} className="cart-icon-neon" />
+            {/* Share Button as in Image 2 */}
+            <button
+              onClick={handleShare}
+              className="share-trigger-btn"
+              title="Share BiteHub"
+              aria-label="Share"
+            >
+              <Share2 size={18} />
+              {sharedToast && <span className="share-toast">Link Copied!</span>}
+            </button>
+
+            {/* Cart Button */}
+            <button onClick={onCartClick} className="cart-trigger-btn" id="header-cart-btn">
+              <ShoppingBag size={18} className="cart-icon-neon" />
               <span className="cart-badge">{cartCount}</span>
               <span className="cart-price-peek">Rs. {Math.round(cartTotal).toLocaleString()}</span>
             </button>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Toggle (Hamburger) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="mobile-nav-toggle"
-              aria-label="Toggle menu"
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
             </button>
@@ -92,16 +137,22 @@ export default function Header({ cartCount, cartTotal, onCartClick }) {
               }}
               className="mobile-nav-link"
             >
-              Base Station
+              HOME
             </button>
             <button onClick={() => scrollToSection("menu-section")} className="mobile-nav-link">
-              Interstellar Menu
+              BURGERS
+            </button>
+            <button onClick={() => scrollToSection("menu-section")} className="mobile-nav-link">
+              SNACKS &amp; FRIES
+            </button>
+            <button onClick={() => scrollToSection("menu-section")} className="mobile-nav-link">
+              DRINKS &amp; SHAKES
             </button>
             <button onClick={() => scrollToSection("about-section")} className="mobile-nav-link">
-              Core Mission (About)
+              SECTOR INFO
             </button>
             <button onClick={() => scrollToSection("contact-section")} className="mobile-nav-link">
-              Transmit Comms (Contact)
+              CONTACTS
             </button>
 
             <div className="mobile-contact-info">

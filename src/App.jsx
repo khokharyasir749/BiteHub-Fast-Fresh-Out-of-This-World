@@ -142,7 +142,10 @@ export default function App() {
       />
 
       {/* Hero Banner */}
-      <Hero />
+      <Hero
+        onAddToCart={handleAddToCart}
+        onSelectFood={onSelectFood}
+      />
 
       {/* Core Menu Panel */}
       <MenuSection
